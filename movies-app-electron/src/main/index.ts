@@ -2,7 +2,8 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import path = require('path')
+const path = require('path')
+require('dotenv').config() // Load environment variables from .env file
 
 function createWindow(): void {
   // Create the browser window.
