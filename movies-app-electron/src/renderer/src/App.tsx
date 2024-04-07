@@ -1,33 +1,51 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
+import { useState, useEffect, useCallback } from 'react'
 
 function App(): JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+  const [movies, setMovies] = useState([]) //initializing the state variable as an empty array
+
+  const fetchTrending = useCallback(async (signal: AbortController['signal']): Promise<void> => {
+    const data = await fetch(
+      `
+    https://api.themoviedb.org/3/trending/all/day?api_key=${window.envVars.apiKey}`,
+      { signal }
+    )
+    const dataJ = await data.json() // fetching data from API in JSON Format
+    setMovies(dataJ.results) //storing that data in the state
+  }, [])
+
+  useEffect(() => {
+    const abortController = new AbortController()
+    const signal = abortController.signal
+    if (!movies.length) {
+      console.log('fetching')
+      console.log('envVariables', window.envVars.apiKey)
+
+      fetchTrending(signal) //calling the fetchTrending function only during the initial rendering of the app.
+    }
+    return () => {
+      abortController.abort()
+    }
+  }, [movies, fetchTrending])
+
+  console.log('state', movies)
+  const img_300 = 'https://image.tmdb.org/t/p/w300'
 
   return (
     <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
+      <div
+        style={{
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column'
+        }}
+      >
+        {movies.length &&
+          movies.map((movie) => {
+            return <img key={movie.title} src={`${img_300}/${movie.poster_path}`}></img>
+          })}
       </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
-        </div>
-      </div>
-      <Versions></Versions>
     </>
   )
 }
