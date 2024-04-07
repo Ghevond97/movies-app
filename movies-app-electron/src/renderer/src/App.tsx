@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { add } from 'movies-api-pack'
 
 function App(): JSX.Element {
   const [movies, setMovies] = useState([]) //initializing the state variable as an empty array
@@ -12,7 +13,7 @@ function App(): JSX.Element {
     const dataJ = await data.json() // fetching data from API in JSON Format
     setMovies(dataJ.results) //storing that data in the state
   }, [])
-
+  console.log('ADD', add(1, 2))
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
