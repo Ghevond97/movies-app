@@ -1,17 +1,14 @@
 import { useState, useEffect, useCallback } from 'react'
-import { add } from 'movies-api-pack'
+import { add, fetchData, TrendingMovieData } from 'movies-api-pack'
 
 function App(): JSX.Element {
-  const [movies, setMovies] = useState([]) //initializing the state variable as an empty array
+  const [movies, setMovies] = useState<TrendingMovieData[]>([]) //initializing the state variable as an empty array
 
   const fetchTrending = useCallback(async (signal: AbortController['signal']): Promise<void> => {
-    const data = await fetch(
-      `
-    https://api.themoviedb.org/3/trending/all/day?api_key=${window.envVars.apiKey}`,
-      { signal }
-    )
-    const dataJ = await data.json() // fetching data from API in JSON Format
-    setMovies(dataJ.results) //storing that data in the state
+    const data = await fetchData(window.envVars.apiKey, signal)
+    console.log('DATA', data)
+    // fetching data from API in JSON Format
+    setMovies(data.results) //storing that data in the state
   }, [])
   console.log('ADD', add(1, 2))
   useEffect(() => {

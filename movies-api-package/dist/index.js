@@ -16,19 +16,54 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
 
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
-  add: () => add
+  add: () => add,
+  fetchData: () => fetchData
 });
 module.exports = __toCommonJS(src_exports);
 function add(a, b) {
   return a + b;
 }
 console.log(add(3, 5));
+function fetchData(apiKey, signal) {
+  return __async(this, null, function* () {
+    console.log("FETCHING");
+    const response = yield fetch(
+      `
+  https://api.themoviedb.org/3/trending/all/day?api_key=${apiKey}`,
+      { signal }
+    );
+    console.log("RESP", response);
+    const data = yield response.json();
+    return data;
+  });
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  add
+  add,
+  fetchData
 });
 //# sourceMappingURL=index.js.map
