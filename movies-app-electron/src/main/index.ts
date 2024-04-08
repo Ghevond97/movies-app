@@ -5,6 +5,24 @@ import icon from '../../resources/icon.png?asset'
 const path = require('path')
 require('dotenv').config() // Load environment variables from .env file
 
+const {
+  default: installExtension,
+  REDUX_DEVTOOLS,
+  REACT_DEVELOPER_TOOLS
+} = require('electron-devtools-installer')
+
+async function installExtensions(mainWindow): void {
+  try {
+    await installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS])
+    console.log('Extensions installed successfully')
+  } catch (error) {
+    console.error('Error installing extensions:', error)
+  } finally {
+    // Open DevTools after extension installation
+    mainWindow.webContents.openDevTools()
+  }
+}
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -15,7 +33,8 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      devTools: is.dev
     }
   })
 
@@ -37,6 +56,11 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
+  // Only install DevTools extensions in development
+  if (is.dev) {
+    installExtensions(mainWindow)
+  }
+
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
@@ -49,7 +73,7 @@ function createWindow(): void {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 

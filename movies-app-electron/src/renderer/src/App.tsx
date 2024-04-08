@@ -1,8 +1,17 @@
 import { useState, useEffect, useCallback } from 'react'
 import { add, fetchData, TrendingMovieData } from 'movies-api-pack'
+import { useAppDispatch, RootState, AppDispatch } from './store'
+import { useSelector } from 'react-redux'
+import { fetchTrendingMovies } from './features/TrendingMovies/store/ducks'
 
 function App(): JSX.Element {
   const [movies, setMovies] = useState<TrendingMovieData[]>([]) //initializing the state variable as an empty array
+  const dispatch: AppDispatch = useAppDispatch()
+  const githubIssueList = useSelector((state: RootState) => state.trending)
+  console.log('TRENDING STORE', githubIssueList)
+  useEffect(() => {
+    dispatch(fetchTrendingMovies())
+  }, [dispatch])
 
   const fetchTrending = useCallback(async (signal: AbortController['signal']): Promise<void> => {
     const data = await fetchData(window.envVars.apiKey, signal)
