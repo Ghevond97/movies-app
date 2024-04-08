@@ -11,7 +11,7 @@ const {
   REACT_DEVELOPER_TOOLS
 } = require('electron-devtools-installer')
 
-async function installExtensions(mainWindow): void {
+async function installExtensions(mainWindow): Promise<void> {
   try {
     await installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS])
     console.log('Extensions installed successfully')
