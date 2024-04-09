@@ -47,16 +47,13 @@ module.exports = __toCommonJS(src_exports);
 function add(a, b) {
   return a + b;
 }
-console.log(add(3, 5));
 function fetchData(apiKey, signal) {
   return __async(this, null, function* () {
-    console.log("FETCHING");
     const response = yield fetch(
       `
   https://api.themoviedb.org/3/trending/all/day?api_key=${apiKey}`,
       { signal }
     );
-    console.log("RESP", response);
     const data = yield response.json();
     return data;
   });

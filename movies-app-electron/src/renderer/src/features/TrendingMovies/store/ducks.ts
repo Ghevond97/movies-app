@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { TrendingMovieData, fetchData } from 'movies-api-pack'
 
 export const fetchTrendingMovies = createAsyncThunk<
@@ -16,13 +16,13 @@ export const fetchTrendingMovies = createAsyncThunk<
 })
 
 export interface TrendingMoviesInitialState {
-  trendingMovies: TrendingMovieData[]
+  data: TrendingMovieData[]
   loading: boolean
   error: string | null
 }
 
 const initialState: TrendingMoviesInitialState = {
-  trendingMovies: [],
+  data: [],
   loading: false,
   error: null
 }
@@ -39,7 +39,7 @@ export const trendingMoviesSlice = createSlice({
       })
       .addCase(fetchTrendingMovies.fulfilled, (state, action) => {
         state.loading = false
-        state.trendingMovies = action.payload
+        state.data = action.payload
       })
       .addCase(fetchTrendingMovies.rejected, (state, action) => {
         state.loading = false
