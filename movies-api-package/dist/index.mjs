@@ -20,9 +20,6 @@ var __async = (__this, __arguments, generator) => {
 };
 
 // src/index.ts
-function add(a, b) {
-  return a + b;
-}
 function fetchData(apiKey, signal) {
   return __async(this, null, function* () {
     const response = yield fetch(
@@ -34,8 +31,18 @@ function fetchData(apiKey, signal) {
     return data;
   });
 }
+function fetchMoviesByKeyword(apiKey, signal, keyWord) {
+  return __async(this, null, function* () {
+    const response = yield fetch(
+      `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&language=en-US&query=${keyWord}&page=${1}&include_adult=false`,
+      { signal }
+    );
+    const data = yield response.json();
+    return data;
+  });
+}
 export {
-  add,
-  fetchData
+  fetchData,
+  fetchMoviesByKeyword
 };
 //# sourceMappingURL=index.mjs.map

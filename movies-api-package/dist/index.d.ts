@@ -1,4 +1,3 @@
-declare function add(a: number, b: number): number;
 interface TrendingMovieData {
     adult: boolean;
     backdrop_path: string;
@@ -15,6 +14,7 @@ interface TrendingMovieData {
     video: boolean;
     vote_average: number;
     vote_count: number;
+    name: string;
 }
 interface ApiResponse {
     page: number;
@@ -23,5 +23,6 @@ interface ApiResponse {
     total_results: number;
 }
 declare function fetchData(apiKey: string, signal: AbortController["signal"]): Promise<ApiResponse>;
+declare function fetchMoviesByKeyword(apiKey: string, signal: AbortController["signal"], keyWord: string): Promise<ApiResponse>;
 
-export { type TrendingMovieData, add, fetchData };
+export { type TrendingMovieData, fetchData, fetchMoviesByKeyword };

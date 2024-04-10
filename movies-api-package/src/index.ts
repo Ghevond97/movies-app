@@ -1,7 +1,3 @@
-export function add(a: number, b: number): number {
-  return a + b;
-}
-
 export interface TrendingMovieData {
   adult: boolean;
   backdrop_path: string;
@@ -18,6 +14,7 @@ export interface TrendingMovieData {
   video: boolean;
   vote_average: number;
   vote_count: number;
+  name: string;
 }
 
 interface ApiResponse {
@@ -36,6 +33,19 @@ export async function fetchData(
     { signal }
   );
 
+  const data = await response.json();
+  return data;
+}
+
+export async function fetchMoviesByKeyword(
+  apiKey: string,
+  signal: AbortController["signal"],
+  keyWord: string
+): Promise<ApiResponse> {
+  const response = await fetch(
+    `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&language=en-US&query=${keyWord}&page=${1}&include_adult=false`,
+    { signal }
+  );
   const data = await response.json();
   return data;
 }

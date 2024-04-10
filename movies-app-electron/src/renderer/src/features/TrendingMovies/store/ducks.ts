@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { TrendingMovieData, fetchData } from 'movies-api-pack'
+import { TrendingMovieData, fetchData, fetchMoviesByKeyword } from 'movies-api-pack'
 
 export const fetchTrendingMovies = createAsyncThunk<
   TrendingMovieData[],
@@ -15,22 +15,48 @@ export const fetchTrendingMovies = createAsyncThunk<
   }
 })
 
+export const fetchSearchedMovies = createAsyncThunk<
+  TrendingMovieData[],
+  void,
+  { rejectValue: string }
+>('trending/fetchSearchedMovies', async (_, thunkAPI) => {
+  try {
+    const searchTerm = thunkAPI.getState().trending.searchTerm
+
+    const response = await fetchMoviesByKeyword(window.envVars.apiKey, thunkAPI.signal, searchTerm)
+    console.log('search data', response.results)
+
+    return response.results
+  } catch {
+    return thunkAPI.rejectWithValue('failed to fetch searched movies')
+  }
+})
+
 export interface TrendingMoviesInitialState {
   data: TrendingMovieData[]
   loading: boolean
   error: string | null
+  searchTerm: string
+  searchedMovies: TrendingMovieData[]
 }
 
 const initialState: TrendingMoviesInitialState = {
   data: [],
   loading: false,
-  error: null
+  error: null,
+  searchTerm: '',
+  searchedMovies: []
 }
 
 export const trendingMoviesSlice = createSlice({
   name: 'movies/trending',
   initialState,
-  reducers: {},
+  reducers: {
+    setSearchTerm: (state, action) => {
+      console.log('action', action)
+      state.searchTerm = action.payload
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchTrendingMovies.pending, (state) => {
@@ -45,7 +71,20 @@ export const trendingMoviesSlice = createSlice({
         state.loading = false
         state.error = action.error.message || 'Something went wrong'
       })
+      .addCase(fetchSearchedMovies.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(fetchSearchedMovies.fulfilled, (state, action) => {
+        state.loading = false
+        state.searchedMovies = action.payload
+      })
+      .addCase(fetchSearchedMovies.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.error.message || 'Something went wrong'
+      })
   }
 })
 
+export const { setSearchTerm } = trendingMoviesSlice.actions
 export default trendingMoviesSlice.reducer
