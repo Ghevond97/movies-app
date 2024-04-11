@@ -52,6 +52,7 @@ const TrendingMoviesPage: FunctionComponent = () => {
                     <Card
                       imgUrl={`${img_300}/${movie.poster_path}`}
                       title={movie.title || movie.name}
+                      id={movie.id}
                     />
                   </div>
                 )
@@ -63,6 +64,7 @@ const TrendingMoviesPage: FunctionComponent = () => {
                     <Card
                       imgUrl={`${img_300}/${movie.poster_path}`}
                       title={movie.title || movie.name}
+                      id={movie.id}
                     />
                   </div>
                 )
