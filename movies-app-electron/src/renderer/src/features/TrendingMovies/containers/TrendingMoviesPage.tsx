@@ -36,40 +36,64 @@ const TrendingMoviesPage: FunctionComponent = () => {
 
   const img_300 = 'https://image.tmdb.org/t/p/w300'
 
-  if (trendingMovies.loading) {
-    return <Spinner />
-  }
-
   return (
     <>
-      <div className="container mx-auto">
-        <SearchInput onchange={handleInputChange} value={searchTerm} />
-        <div className="flex flex-wrap -mx-4 ml-0">
-          {trendingMovies.searchedMovies.length > 0 && trendingMovies.searchTerm !== ''
-            ? trendingMovies.searchedMovies.map((movie) => {
-                return (
-                  <div key={movie.id} className="w-1/3 px-4 mb-4">
-                    <Card
-                      imgUrl={`${img_300}/${movie.poster_path}`}
-                      title={movie.title || movie.name}
-                      id={movie.id}
-                    />
-                  </div>
-                )
-              })
-            : trendingMovies.data.length &&
-              trendingMovies.data.map((movie) => {
-                return (
-                  <div key={movie.id} className="w-1/3 px-4 mb-4">
-                    <Card
-                      imgUrl={`${img_300}/${movie.poster_path}`}
-                      title={movie.title || movie.name}
-                      id={movie.id}
-                    />
-                  </div>
-                )
-              })}
+      <div className="container mx-auto h-screen">
+        <div className="pt-4 pb-4">
+          <SearchInput onchange={handleInputChange} value={searchTerm} />
         </div>
+
+        {/* Display loading spinner if data is loading */}
+        {trendingMovies.loading && (
+          <div className="flex justify-center items-center h-full">
+            <Spinner />
+          </div>
+        )}
+
+        {/* Display movie cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          {/* If there are searched movies, render them */}
+          {trendingMovies.searchedMovies.map((movie) => (
+            <div key={movie.id}>
+              <Card
+                imgUrl={
+                  movie.poster_path || movie.backdrop_path
+                    ? `${img_300}/${movie.poster_path || movie.backdrop_path}`
+                    : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
+                }
+                title={movie.title || movie.name}
+                id={movie.id}
+              />
+            </div>
+          ))}
+          {/* If there are no search results and no search term, render trending movies */}
+          {!searchTerm &&
+            trendingMovies.data.map((movie) => (
+              <div key={movie.id}>
+                <Card
+                  imgUrl={`${img_300}/${movie.poster_path}`}
+                  title={movie.title || movie.name}
+                  id={movie.id}
+                />
+              </div>
+            ))}
+        </div>
+
+        {/* Display "no data" message if there is a search term but no search results */}
+        {!trendingMovies.loading &&
+          searchTerm !== '' &&
+          trendingMovies.searchedMovies.length === 0 && (
+            <div className="h-full flex justify-center items-center align-middle">
+              <p className="text-center text-gray-500">No movies found for "{searchTerm}".</p>
+            </div>
+          )}
+
+        {/* Display "no trending movies" message if there are no trending movies */}
+        {!trendingMovies.loading && !searchTerm && trendingMovies.data.length === 0 && (
+          <div className="flex justify-center items-center h-full align-middle">
+            <p className="text-center text-gray-500">No trending movies found.</p>
+          </div>
+        )}
       </div>
     </>
   )

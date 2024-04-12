@@ -13,7 +13,12 @@ const Card: FunctionComponent<CardProps> = ({ imgUrl, title, id }) => {
       <a href="#" className="block aspect-w-16 aspect-h-9">
         <div
           className="bg-cover bg-center rounded-t-lg"
-          style={{ backgroundImage: `url(${imgUrl})`, paddingBottom: '56.25%' }}
+          style={{
+            backgroundImage: `url(${imgUrl})`,
+            backgroundSize: 'cover', // Ensures the image covers the entire element
+            backgroundPosition: 'center', // Centers the image
+            paddingBottom: '56.25%' // Maintains the aspect ratio (16:9)
+          }}
         />
       </a>
       <div className="p-5">
