@@ -24,7 +24,6 @@ export const fetchSearchedMovies = createAsyncThunk<
     const searchTerm = thunkAPI.getState().trending.searchTerm
 
     const response = await fetchMoviesByKeyword(window.envVars.apiKey, thunkAPI.signal, searchTerm)
-    console.log('search data', response.results)
 
     return response.results
   } catch {
@@ -53,7 +52,6 @@ export const trendingMoviesSlice = createSlice({
   initialState,
   reducers: {
     setSearchTerm: (state, action) => {
-      console.log('action', action)
       state.searchTerm = action.payload
     }
   },
