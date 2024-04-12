@@ -41,8 +41,26 @@ function fetchMoviesByKeyword(apiKey, signal, keyWord) {
     return data;
   });
 }
+function fetchDetails(apiKey, id) {
+  return __async(this, null, function* () {
+    try {
+      const response = yield fetch(
+        `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&append_to_response=credits%2Ckeywords%2Creviews&language=en-US`
+      );
+      if (response.ok) {
+        const data = yield response.json();
+        return { data, statusCode: response.status };
+      } else {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+    } catch (error) {
+      throw new Error("something wen wrong");
+    }
+  });
+}
 export {
   fetchData,
+  fetchDetails,
   fetchMoviesByKeyword
 };
 //# sourceMappingURL=index.mjs.map
